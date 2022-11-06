@@ -1,0 +1,11 @@
+{% extends "base.html" %} 
+{% block title %} Data Display {% endblock %}
+
+{% block content %}
+<h1 align="center">Info</h1>
+{% for user in users %}
+    {{ user[0] }}
+    {{ user[1] }}
+    {{ user[2] }}
+{% endfor %}
+{% endblock %}
