@@ -13,7 +13,7 @@ def opendb():
     try:
         cnx = mysql.connector.connect(
                 user='root', password='my-secret-pw',
-                host='172.17.0.2', database='demo')
+                host='192.168.56.10', database='demo')
 
     except mysql.connector.Error as err:
             

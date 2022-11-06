@@ -1,8 +1,46 @@
 version: '3.8'
 
 services:
+  mysqlserver:
+    image:  mysql
+    container_name:  app.db
+    command: --default-authentication-plugin=mysql_native_password
+    restart:  always
+    build: 
+      context:  ./database
+      dockerfile: Dockerfile
+    ports:
+      - 3306:3306
+    networks:
+      clientnet:
+        ipv4_address: ${DATABASE_SERVER_IP}
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
+      - SUBNET=${SUBNET}
+      - DATABASE_SERVER_IP=${DATABASE_SERVER_IP}
+      - WEBSERVER_IP=${WEBSERVER_IP}
+
   flaskapp:
+    image:  python
+    container_name:  app.flask
+    restart:  always
     build: 
       context: ./
+      dockerfile: Dockerfile
+    depends_on:
+      - mysqlserver
     ports:
       - 5000:5000
+    networks:
+      clientnet:
+        ipv4_address: ${WEBSERVER_IP}
+    environment:
+        - SUBNET=${SUBNET}
+        - DATABASE_SERVER_IP=${DATABASE_SERVER_IP}
+        - WEBSERVER_IP=${WEBSERVER_IP}
+
+networks:
+  clientnet:
+    ipam:
+      config:
+        - subnet: ${SUBNET}.0/24
